@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use App\Models\Post;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
-class BlogController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,10 +17,10 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = Blog::orderBy('updated_at', 'DESC')->get();
+        $posts = Post::orderBy('updated_at', 'DESC')->get();
         $response = [
-            'message' => 'Blog list',
-            'data' => $blogs
+            'message' => 'Post list',
+            'data' => $posts
         ];
         return response()->json($response, Response::HTTP_OK);
     }
@@ -35,7 +35,7 @@ class BlogController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => ['required'],
-            'details' => ['required']
+            'description' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -43,10 +43,10 @@ class BlogController extends Controller
         }
 
         try {
-            $blog = Blog::create($request->all());
+            $post = Post::create($request->all());
             $response = [
-                'message' => 'Blog created',
-                'data' => $blog
+                'message' => 'Post created successfully',
+                'data' => $post
             ];
             return response()->json($response, Response::HTTP_CREATED);
         } catch (QueryException $e) {
@@ -64,12 +64,11 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        $blog = Blog::findOrFail($id);
+        $post = Post::findOrFail($id);
         $response = [
-            'message' => 'Details of Blog resource',
-            'data' => $blog
+            'message' => 'Post details',
+            'data' => $post
         ];
-
         return response()->json($response, Response::HTTP_OK);
     }
 
@@ -82,10 +81,10 @@ class BlogController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $blog = Blog::findOrFail($id);
+        $post = Post::findOrFail($id);
         $validator = Validator::make($request->all(), [
             'title' => ['required'],
-            'details' => ['required']
+            'description' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -93,10 +92,10 @@ class BlogController extends Controller
         }
 
         try {
-            $blog->update($request->all());
+            $post->update($request->all());
             $response = [
-                'message' => 'Blog updated successfully',
-                'data' => $blog
+                'message' => 'Post updated successfully',
+                'data' => $post
             ];
             return response()->json($response, Response::HTTP_OK);
         } catch (QueryException $e) {
@@ -114,12 +113,11 @@ class BlogController extends Controller
      */
     public function destroy($id)
     {
-        $blog = Blog::findOrFail($id);
-
+        $post = Post::findOrFail($id);
         try {
-            $blog->delete();
+            $post->delete();
             $response = [
-                'message' => 'Blog deleted successfully'
+                'message' => 'Post deleted successfully'
             ];
             return response()->json($response, Response::HTTP_OK);
         } catch (QueryException $e) {
@@ -127,22 +125,5 @@ class BlogController extends Controller
                 'message' => 'Failed ' . $e->errorInfo
             ]);
         }
-    }
-
-    /**
-     * Search blog the specified resource from storage.
-     * 
-     * @param  string $name
-     * @return \Illuminate\Http\Response
-     */
-    public function searchBlogByName($params)
-    {
-        $blog = Blog::where('title', "like", "%".$params."%")->get();
-        $response = [
-            'message' => 'Search blogs successfully!',
-            'data' => $blog
-        ];
-
-        return response()->json($response, Response::HTTP_OK);
     }
 }

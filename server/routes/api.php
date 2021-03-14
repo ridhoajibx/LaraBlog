@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,9 +21,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/blogs', [BlogController::class, 'index']);
-Route::get('/blogs/{id}', [BlogController::class, 'show']);
-Route::post('/create-blog', [BlogController::class, 'store']);
-Route::patch('/edit-blog/{id}', [BlogController::class, 'update']);
-Route::delete('/delete-blog/{id}', [BlogController::class, 'destroy']);
-Route::get('/search-data/{param}', [BlogController::class, 'searchBlogByName']);
+Route::apiResource('/posts', PostController::class)->except(['create', 'edit']);
+Route::get('/posts/search/{param}', [SearchController::class, 'searchPost']);

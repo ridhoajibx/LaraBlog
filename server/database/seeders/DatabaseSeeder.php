@@ -18,9 +18,9 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         $faker = Faker::create();
         foreach (range(1, 10) as $index) {
-            DB::table('blogs')->insert([
-                'title' => $faker->name,
-                'details' => $faker->text(400)
+            DB::table('posts')->insert([
+                'title' => $faker->text(30),
+                'description' => $faker->text(300)
             ]);
         }
     }
